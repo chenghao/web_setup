@@ -4,6 +4,6 @@ __author__ = 'chenghao'
 from tornado.web import RequestHandler
 
 
-class Base(RequestHandler):
+class BaseHandler(RequestHandler):
     def get(self, *args, **kwargs):
         pass
