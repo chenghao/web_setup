@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>用户登录</title>
+    <script src="{{static_url('js/jquery-1.11.1.min.js')}}"></script>
+</head>
+<body>
+    <form action='' method='post'>
+        用户名: <input type="text" id="ChrName" value=""/><br/>
+        密码: <input type="text" id="ChrPwd" value="zks8wU0fC6jKmumqsbqne6eGuDDEwOFUtXK/ZbcfYYI="/><br/>
+    </form>
+    <input type='button' value='登录' onclick="login()" id="loginbut"/>
+</body>
+    <script>
+        function login(){
+            var ChrName = $("#ChrName").val();
+            var ChrPwd = $("#ChrPwd").val();
+            $("#loginbut").attr("disabled", true);
+            $.ajax({
+                url: "/1tongjiang/user/login",
+                type : "POST",
+                dataType : "json",
+                data : {
+                    ChrName : ChrName,
+                    ChrPwd : ChrPwd
+                },
+                success : function(data) {
+                    if (data.status == 0) {
+                        $("#loginbut").attr("disabled", false);
+
+                        alert(JSON.stringify(data.data));
+                    } else {
+                        alert(data.msg);
+                        $("#loginbut").attr("disabled", false);
+                    }
+                },
+                error : function() {
+                    alert("服务繁忙，请稍后再试。");
+                    $("#loginbut").attr("disabled", false);
+                }
+            });
+        }
+
+    </script>
+</html>
