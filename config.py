@@ -32,7 +32,8 @@ mysql_param = {
     "charset": "utf8",
     "db": "test",
     "user": "root",
-    "password": "123456"
+    "password": "123456",
+    "use_unicode": True
 }
 # redis
 redis_param = {
