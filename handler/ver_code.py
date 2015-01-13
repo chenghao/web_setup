@@ -6,7 +6,7 @@ import StringIO
 from PIL import Image, ImageDraw, ImageFont
 from base import Base
 import config
-from db import redisutil
+import cache
 
 """随机验证码"""
 
@@ -25,10 +25,9 @@ class VerCode(Base):
 
         charset = "".join(texts)
         try:
-            redisutil.save(redisutil.ver_code_prefix, imei, charset)
+            cache.redis_cache.set(cache.ver_code_prefix + imei, charset)
         except:
             pass
-
         # 创建画布
         draw = ImageDraw.Draw(im)
         # 设置字体大小

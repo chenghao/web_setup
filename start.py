@@ -17,7 +17,6 @@ tornado.options.parse_command_line()
 
 class Application(tornado.web.Application):
     def __init__(self):
-        print handlers_urls
         handlers = handlers_urls
 
         settings = dict(
