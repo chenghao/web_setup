@@ -26,13 +26,9 @@ class Register(BaseHandler):
         for i in args:
             params[i] = self.get_argument(i)
 
-        print params
-
         item = dbutil.select_one("select loginName from user where loginName=?", params["loginName"])
-        print item
         if item is None:
             row = dbutil.insert("user", **params)
-            print row
             if row:
                 re = {"status": 0}
             else:
