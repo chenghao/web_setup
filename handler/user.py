@@ -13,7 +13,18 @@ class Login(BaseHandler):
 
     def post(self, *args, **kwargs):
         args = self.request.arguments
-        print args
+        params = {}
+        for i in args:
+            params[i] = self.get_argument(i)
+
+        user = dbutil.select_one("""select pid, userName, loginName, loginPwd, age from user where loginName=? and
+                                 loginPwd=?""", params["loginName"], params["loginPwd"])
+        if user:
+            re = {"status": 0, "data": user}
+        else:
+            re = {"status": -2}
+
+        self.finish(json.dumps(re))
 
 
 class Register(BaseHandler):

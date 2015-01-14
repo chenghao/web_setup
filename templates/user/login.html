@@ -7,37 +7,39 @@
 </head>
 <body>
     <form action='' method='post'>
-        用户名: <input type="text" id="ChrName" value=""/><br/>
-        密码: <input type="text" id="ChrPwd" value=""/><br/>
+        登录名: <input type="text" id="loginName" value=""/><br/>
+        密码: <input type="text" id="loginPwd" value=""/><br/>
     </form>
-    <input type='button' value='登录' onclick="login()" id="loginbut"/>
+    <input type='button' value='登录' onclick="login()" id="loginBut"/>
 </body>
     <script>
         function login(){
-            var ChrName = $("#ChrName").val();
-            var ChrPwd = $("#ChrPwd").val();
-            $("#loginbut").attr("disabled", true);
+            var loginName = $("#loginName").val();
+            var loginPwd = $("#loginPwd").val();
+
+            $("#loginBut").attr("disabled", true);
             $.ajax({
-                url: "/1tongjiang/user/login",
+                url: "/websetup/user/login",
                 type : "POST",
                 dataType : "json",
                 data : {
-                    ChrName : ChrName,
-                    ChrPwd : ChrPwd
+                    loginName : loginName,
+                    loginPwd : loginPwd
                 },
                 success : function(data) {
                     if (data.status == 0) {
-                        $("#loginbut").attr("disabled", false);
+                        $("#loginBut").attr("disabled", false);
 
                         alert(JSON.stringify(data.data));
                     } else {
-                        alert(data.msg);
-                        $("#loginbut").attr("disabled", false);
+                        $("#loginBut").attr("disabled", false);
+
+                        alert("登录失败");
                     }
                 },
                 error : function() {
                     alert("服务繁忙，请稍后再试。");
-                    $("#loginbut").attr("disabled", false);
+                    $("#loginBut").attr("disabled", false);
                 }
             });
         }
