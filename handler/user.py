@@ -5,6 +5,8 @@ from base import BaseHandler
 import config
 from db import dbutil
 import json
+from cache import redis_cache
+import cache
 
 
 class Login(BaseHandler):
@@ -20,6 +22,7 @@ class Login(BaseHandler):
         user = dbutil.select_one("""select pid, userName, loginName, loginPwd, age from user where loginName=? and
                                  loginPwd=?""", params["loginName"], params["loginPwd"])
         if user:
+            redis_cache.set(cache.user_session_prefix + "_" + params["loginName"], user)
             re = {"status": 0, "data": user}
         else:
             re = {"status": -2}

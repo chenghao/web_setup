@@ -6,6 +6,8 @@ A simple cache interface.
 '''
 
 from config import logger, redis_param
+import redis
+from redis.exceptions import RedisError
 
 try:
     import cPickle as pickle
@@ -34,39 +36,45 @@ def _safe_pickle_loads(r):
 
 class RedisClient(object):
     def __init__(self):
-        import redis
-
         self._pool = redis.ConnectionPool(host=redis_param["host"], port=redis_param["port"], db=0,
                                           max_connections=150)
         self._client = redis.Redis(connection_pool=self._pool)
 
-    def set(self, key, value, expires=0):
+    def set(self, key, value, expires=half_hour):
         logger.debug('set cache: key = %s' % key)
-
-        self._client.set(key, pickle.dumps(value))
-        if expires:
-            self._client.expire(key, expires)
+        try:
+            self._client.set(key, pickle.dumps(value), ex=expires)
+        except RedisError, e:
+            logger.error("set cache 失败: " + str(e), exc_info=True)
 
     def hset(self, name, key, value):
         logger.debug('hset cache: name = %s, key = %s' % (name, key))
-
-        self._client.hset(name, key, pickle.dumps(value))
+        try:
+            self._client.hset(name, key, pickle.dumps(value))
+        except RedisError, e:
+            logger.error("hset cache 失败: " + str(e), exc_info=True)
 
     def get(self, key, default=None):
         logger.debug('get cache: key = %s' % key)
-
-        r = self._client.get(key)
-        if r is None:
-            return default
-        return _safe_pickle_loads(r)
+        try:
+            r = self._client.get(key)
+            if r is None:
+                return default
+            return _safe_pickle_loads(r)
+        except RedisError, e:
+            logger.error("get cache 失败: " + str(e), exc_info=True)
+            return -1
 
     def hget(self, name, key, default=None):
         logger.debug('hget cache: name = %s, key = %s' % (name, key))
-
-        r = self._client.hget(name, key)
-        if r is None:
-            return default
-        return _safe_pickle_loads(r)
+        try:
+            r = self._client.hget(name, key)
+            if r is None:
+                return default
+            return _safe_pickle_loads(r)
+        except RedisError, e:
+            logger.error("hget cache 失败: " + str(e), exc_info=True)
+            return -1
 
     def gets(self, *keys):
         '''
@@ -85,18 +93,25 @@ class RedisClient(object):
         ['Key1', None, 'Key3']
         '''
         logger.debug('gets cache: keys = %s' % keys)
-
-        return map(_safe_pickle_loads, self._client.mget(keys))
+        try:
+            return map(_safe_pickle_loads, self._client.mget(keys))
+        except RedisError, e:
+            logger.error("gets cache 失败: " + str(e), exc_info=True)
+            return -1
 
     def delete(self, key):
         logger.debug('delete cache: key = %s' % key)
-
-        self._client.delete(key)
+        try:
+            self._client.delete(key)
+        except RedisError, e:
+            logger.error("delete cache 失败: " + str(e), exc_info=True)
 
     def hdel(self, name, key):
         logger.debug('hdel cache: name = %s, key = %s' % (name, key))
-
-        self._client.hdel(name, key)
+        try:
+            self._client.hdel(name, key)
+        except RedisError, e:
+            logger.error("hdel cache 失败: " + str(e), exc_info=True)
 
 
 redis_cache = RedisClient()

@@ -24,10 +24,9 @@ class VerCode(BaseHandler):
         texts = random.sample(rule, 4)
 
         charset = "".join(texts)
-        try:
-            cache.redis_cache.set(cache.ver_code_prefix + imei, charset)
-        except:
-            pass
+
+        cache.redis_cache.set(cache.ver_code_prefix + imei, charset)
+
         # 创建画布
         draw = ImageDraw.Draw(im)
         # 设置字体大小
