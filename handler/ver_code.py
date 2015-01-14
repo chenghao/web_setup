@@ -4,14 +4,14 @@ import random
 import string
 import StringIO
 from PIL import Image, ImageDraw, ImageFont
-from base import Base
+from base import BaseHandler
 import config
 import cache
 
 """随机验证码"""
 
 
-class VerCode(Base):
+class VerCode(BaseHandler):
     def get(self, *args, **kwargs):
         imei = self.get_argument("imei")  # 手机设备的唯一标识
 

@@ -7,37 +7,46 @@
 </head>
 <body>
     <form action='' method='post'>
-        用户名: <input type="text" id="ChrName" value=""/><br/>
-        密码: <input type="text" id="ChrPwd" value=""/><br/>
+        用户名: <input type="text" id="userName" value=""/><br/>
+        登录名: <input type="text" id="loginName" value=""/><br/>
+        密码: <input type="text" id="loginPwd" value=""/><br/>
+        年龄: <input type="text" id="age" value=""/><br/>
     </form>
-    <input type='button' value='注册' onclick="login()" id="loginbut"/>
+    <input type='button' value='注册' onclick="register()" id="registerBut"/>
 </body>
     <script>
-        function login(){
-            var ChrName = $("#ChrName").val();
-            var ChrPwd = $("#ChrPwd").val();
-            $("#loginbut").attr("disabled", true);
+        function register(){
+            var userName = $("#userName").val();
+            var loginName = $("#loginName").val();
+            var loginPwd = $("#loginPwd").val();
+            var age = $("#age").val();
+
+            $("#registerBut").attr("disabled", true);
             $.ajax({
-                url: "/1tongjiang/user/login",
+                url: "/websetup/user/register",
                 type : "POST",
                 dataType : "json",
                 data : {
-                    ChrName : ChrName,
-                    ChrPwd : ChrPwd
+                    userName : userName,
+                    loginName : loginName,
+                    loginPwd: loginPwd,
+                    age: age
                 },
                 success : function(data) {
                     if (data.status == 0) {
-                        $("#loginbut").attr("disabled", false);
-
-                        alert(JSON.stringify(data.data));
+                        $("#registerBut").attr("disabled", false);
+                        alert("成功");
+                    } else if (data.status == -2){
+                        $("#registerBut").attr("disabled", false);
+                        alert("该登录名已存在");
                     } else {
-                        alert(data.msg);
-                        $("#loginbut").attr("disabled", false);
+                        $("#registerBut").attr("disabled", false);
+                        alert("失败");
                     }
                 },
                 error : function() {
                     alert("服务繁忙，请稍后再试。");
-                    $("#loginbut").attr("disabled", false);
+                    $("#registerBut").attr("disabled", false);
                 }
             });
         }

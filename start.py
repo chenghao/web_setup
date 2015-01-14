@@ -7,6 +7,8 @@ import tornado.httpserver
 import tornado.ioloop
 from tornado.options import define, options
 from urls import handlers_urls
+from db import dbutil
+from config import mysql_param
 
 define("port", default=7777, help="run on the given port", type=int)
 
@@ -25,6 +27,9 @@ class Application(tornado.web.Application):
             debug=True,
         )
         tornado.web.Application.__init__(self, handlers, **settings)
+
+        dbutil.init("mysql", mysql_param["db"], mysql_param["host"], mysql_param["port"], mysql_param["user"],
+                    mysql_param["password"], mysql_param["password"])
 
 
 http_server = tornado.httpserver.HTTPServer(Application())
