@@ -14,7 +14,7 @@ font_type = os.path.abspath("../web_setup/static/fonts/calibri.ttf")
 
 # 按每天生成日志文件 linux (win是存放在该项目的所在盘下)
 # logHandler = logging.handlers.TimedRotatingFileHandler("/data/logs/hao", "D", 1)  # 服务器
-logHandler = logging.handlers.TimedRotatingFileHandler("/home/chenghao/logs/hao", "D", 1)
+logHandler = logging.handlers.TimedRotatingFileHandler("/home/chenghao/logs/websetup", "D", 1)
 # 格式化日志内容
 logFormatter = logging.Formatter('%(asctime)s %(name)-5s %(levelname)-5s %(message)s')
 logHandler.setFormatter(logFormatter)
